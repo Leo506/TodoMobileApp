@@ -5,8 +5,14 @@
              xmlns:viewModels="clr-namespace:GoalApp.ViewModels;assembly=GoalApp"
              x:Class="GoalApp.MainPage">
 
-    <StackLayout>
-        <ScrollView>
+    <StackLayout VerticalOptions="FillAndExpand">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <ScrollView Grid.Row="0">
             <ListView x:Name="TasksList" ItemsSource="{Binding Tasks}" SelectionMode="None" RowHeight="200" SeparatorVisibility="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -19,18 +25,23 @@
                                 </StackLayout>
                                     </Frame>
                             </ViewCell.View>
+                            <ViewCell.ContextActions>
+                                <MenuItem Text="Delete" Command="{Binding ListViewModel.DeleteCommand}" CommandParameter="{Binding}"/>
+                            </ViewCell.ContextActions>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </ScrollView>
 
-        <StackLayout x:Name="CreatingForm">
-            <Entry Placeholder="Enter new task title" Text="{Binding NewTask.Title, Mode=TwoWay}"/>
-            <Editor HeightRequest="100" Text="{Binding NewTask.Description, Mode=TwoWay}" AutoSize="TextChanges"/>
-            <Button Text="Create new task" Command="{Binding CreateCommand}"/>
-        </StackLayout>
-        
+            <ImageButton Grid.Row="1" 
+                         Source="AddBtn.png" 
+                         HorizontalOptions="Center" 
+                         VerticalOptions="End" 
+                         Command="{Binding ShowAddFormCommand}" 
+                         BackgroundColor="Transparent"
+                         Scale="0.7"/>
+        </Grid>
     </StackLayout>
 
 </ContentPage>

@@ -32,7 +32,7 @@ public class TaskViewModel :  INotifyPropertyChanged
         }
     }
     
-    public TaskPageViewModel PageViewModel { get; set; }
+    public TaskListViewModel ListViewModel { get; set; }
     
     [NotifyPropertyChangedInvocator]
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

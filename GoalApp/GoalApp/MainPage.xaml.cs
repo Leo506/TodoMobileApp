@@ -11,11 +11,11 @@ namespace GoalApp
 {
     public partial class MainPage : ContentPage
     {
-        private TaskPageViewModel _viewModel;
+        private TaskListViewModel _viewModel;
         public MainPage()
         {
             InitializeComponent();
-            _viewModel = new TaskPageViewModel();
+            _viewModel = new TaskListViewModel(Navigation);
             BindingContext = _viewModel;
         }
 

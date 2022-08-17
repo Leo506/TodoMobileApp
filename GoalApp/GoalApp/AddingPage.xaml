@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GoalApp.AddingPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Frame BackgroundColor="Aqua" CornerRadius="8">
+                <StackLayout>
+                    <Entry Text="{Binding NewTask.Title}"/>
+                    <Editor Text="{Binding NewTask.Description}" MaxLength="100" AutoSize="TextChanges"/>
+                </StackLayout>
+            </Frame>
+            <Button Text="Add new task" Command="{Binding AddCommand}"/>
+            <Button Text="Back" Command="{Binding BackCommand}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
