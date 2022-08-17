@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using GoalApp.Annotations;
+using GoalApp.Models;
 
 namespace GoalApp.ViewModels;
 
@@ -32,11 +33,20 @@ public class TaskViewModel :  INotifyPropertyChanged
         }
     }
     
+    
+    public int Id { get; set; }
+    
     public TaskListViewModel ListViewModel { get; set; }
     
     [NotifyPropertyChangedInvocator]
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
+        App.TasksRepository.UpdateTask(new TaskModel()
+        {
+            Title = Title,
+            Description = Description,
+            Id = Id
+        });
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
