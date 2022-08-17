@@ -34,9 +34,12 @@ public class TasksRepository
     {
         _database.Update(task);
     }
+<<<<<<< HEAD
 
     public void Delete(TaskModel task)
     {
         _database.Delete(task);
     }
+=======
+>>>>>>> origin/main
 }
