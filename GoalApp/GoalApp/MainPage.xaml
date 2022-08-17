@@ -26,6 +26,7 @@
                                     </Frame>
                             </ViewCell.View>
                             <ViewCell.ContextActions>
+                                <MenuItem Text="{Binding Id}"/>
                                 <MenuItem Text="Delete" Command="{Binding ListViewModel.DeleteCommand}" CommandParameter="{Binding}"/>
                             </ViewCell.ContextActions>
                         </ViewCell>

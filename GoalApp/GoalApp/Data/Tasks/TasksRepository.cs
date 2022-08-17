@@ -5,7 +5,7 @@ using SQLite;
 
 namespace GoalApp.Data.Tasks;
 
-public class TasksRepository
+public class TasksRepository : IRepository<TaskModel>
 {
     private readonly SQLiteConnection _database;
 
@@ -15,31 +15,13 @@ public class TasksRepository
         _database.CreateTable<TaskModel>();
     }
 
-    public IEnumerable<TaskModel> GetAll()
-    {
-        return _database.Table<TaskModel>().ToList();
-    }
+    public IEnumerable<TaskModel> GetAll() => _database.Table<TaskModel>().ToList();
 
-    public int AddNewTask(TaskModel task)
-    {
-        if (task.Id != 0)
-            UpdateTask(task);
-        else
-            _database.Insert(task);
+    public TaskModel Get(int id) => _database.Get<TaskModel>(id);
 
-        return task.Id;
-    }
+    public int AddNew(TaskModel item) => _database.Insert(item);
 
-    public void UpdateTask(TaskModel task)
-    {
-        _database.Update(task);
-    }
-<<<<<<< HEAD
+    public void Update(TaskModel item) => _database.Update(item);
 
-    public void Delete(TaskModel task)
-    {
-        _database.Delete(task);
-    }
-=======
->>>>>>> origin/main
+    public void Delete(TaskModel task) => _database.Delete<TaskModel>(task.Id);
 }

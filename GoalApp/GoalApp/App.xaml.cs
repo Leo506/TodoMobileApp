@@ -1,5 +1,8 @@
 ﻿using System;
+using GoalApp.Data;
 using GoalApp.Data.Tasks;
+using GoalApp.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,14 +14,20 @@ namespace GoalApp
     {
         private const string DatabaseName = "Tasks.db";
 
-        private static TasksRepository _repository;
-        public static TasksRepository TasksRepository =>
-            _repository ??= new TasksRepository(System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DatabaseName));
-
+        public static IServiceProvider ServiceProvider;
         public App()
         {
             InitializeComponent();
+
+            var services = new ServiceCollection()
+                .AddSingleton<IRepository<TaskModel>>(provider => new TasksRepository(System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DatabaseName)))
+                .AddAutoMapper(typeof(App));
+
+            ServiceProvider = services.BuildServiceProvider();
+
+            var mapper = ServiceProvider.GetRequiredService<AutoMapper.IConfigurationProvider>();
+            mapper.CompileMappings();
 
             MainPage = new MainPage();
         }
