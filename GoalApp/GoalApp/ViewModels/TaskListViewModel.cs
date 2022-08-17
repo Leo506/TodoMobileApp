@@ -1,9 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GoalApp.Annotations;
+using GoalApp.Models;
 using Xamarin.Forms;
 
 namespace GoalApp.ViewModels;
@@ -30,22 +32,14 @@ public class TaskListViewModel : INotifyPropertyChanged
         {
             ListViewModel = this
         };
-        Tasks = new ObservableCollection<TaskViewModel>()
+        Tasks = new ObservableCollection<TaskViewModel>(App.TasksRepository.GetAll().Select(t => 
+            new TaskViewModel()
         {
-            new TaskViewModel()
-            {
-                Title = "Title 1",
-                Description = "Make it and it",
-                ListViewModel = this
-            },
-
-            new TaskViewModel()
-            {
-                Title = "Title 2",
-                Description = "Make make make",
-                ListViewModel = this
-            }
-        };
+            Title = t.Title,
+            Description = t.Description,
+            ListViewModel = this,
+            Id = t.Id
+        }));
 
         AddCommand = new Command(async () => await Create());
         ShowAddFormCommand = new Command(async () => await ShowAddForm());
@@ -55,11 +49,19 @@ public class TaskListViewModel : INotifyPropertyChanged
 
     private async Task Create()
     {
-        Tasks.Add(new TaskViewModel()
+        var taskToAdd = new TaskViewModel()
         {
             Title = NewTask.Title,
             Description = NewTask.Description,
             ListViewModel = this
+        };
+        
+        Tasks.Add(taskToAdd);
+
+        App.TasksRepository.AddNewTask(new TaskModel()
+        {
+            Title = taskToAdd.Title,
+            Description = taskToAdd.Description
         });
 
         await _navigation.PopModalAsync(true);
