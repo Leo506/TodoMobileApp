@@ -19,7 +19,11 @@ public class TasksRepository : IRepository<TaskModel>
 
     public TaskModel Get(int id) => _database.Get<TaskModel>(id);
 
-    public int AddNew(TaskModel item) => _database.Insert(item);
+    public int AddNew(TaskModel item)
+    {
+        _database.Insert(item);
+        return item.Id;
+    }
 
     public void Update(TaskModel item) => _database.Update(item);
 
