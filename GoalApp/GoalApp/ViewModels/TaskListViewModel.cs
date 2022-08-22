@@ -16,9 +16,9 @@ namespace GoalApp.ViewModels;
 
 public class TaskListViewModel : INotifyPropertyChanged
 {
-    public ObservableCollection<TaskViewModel> Tasks { get; set; }
+    public ObservableCollection<TaskModel> Tasks { get; set; }
     
-    public TaskViewModel NewTask { get; set; }
+    public TaskModel NewTask { get; set; }
     
     public ICommand ShowAddFormCommand { get; set; }
     public ICommand AddCommand { get; set; }
@@ -38,15 +38,10 @@ public class TaskListViewModel : INotifyPropertyChanged
         _navigation = navigation;
         _repository = App.ServiceProvider.GetRequiredService<IRepository<TaskModel>>();
         _mapper = App.ServiceProvider.GetRequiredService<IMapper>();
-        
-        NewTask = new TaskViewModel()
-        {
-            ListViewModel = this
-        };
 
-        Tasks = new ObservableCollection<TaskViewModel>(_repository.GetAll().Result
-            .Select(t => _mapper.Map<TaskViewModel>(t)));
-        Tasks.ForEach(t => t.ListViewModel = this);
+        NewTask = new TaskModel();
+
+        Tasks = new ObservableCollection<TaskModel>(_repository.GetAll().Result);
 
         AddCommand = new Command(async () => await Create());
         ShowAddFormCommand = new Command(async () => await ShowAddForm());
@@ -56,16 +51,15 @@ public class TaskListViewModel : INotifyPropertyChanged
 
     private async Task Create()
     {
-        var taskToAdd = new TaskViewModel()
+        var taskToAdd = new TaskModel()
         {
             Title = NewTask.Title,
-            Description = NewTask.Description,
-            ListViewModel = this
+            Description = NewTask.Description
         };
         
         Tasks.Add(taskToAdd);
 
-        var addResult = _repository.AddNew(_mapper.Map<TaskModel>(taskToAdd));
+        var addResult = _repository.AddNew(taskToAdd);
         if (!addResult.Success)
             return;;
 
@@ -84,12 +78,12 @@ public class TaskListViewModel : INotifyPropertyChanged
 
     private void Delete(object taskObj)
     {
-        if (taskObj is not TaskViewModel task)
+        if (taskObj is not TaskModel task)
             return;
         
 
         Tasks.Remove(task);
-        _repository.Delete(_mapper.Map<TaskModel>(task));
+        _repository.Delete(task);
     }
 
     [NotifyPropertyChangedInvocator]
