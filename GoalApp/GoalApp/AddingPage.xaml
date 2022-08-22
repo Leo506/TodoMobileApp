@@ -2,13 +2,30 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:convertors="clr-namespace:GoalApp.Convertors;assembly=GoalApp"
+             xmlns:models="clr-namespace:GoalApp.Models;assembly=GoalApp"
              x:Class="GoalApp.AddingPage">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <convertors:UrgencyToColorConvertor x:Key="UrgencyToColor"/>
+            <convertors:EnumToIntConvertor x:Key="EnumToInt"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <ContentPage.Content>
         <StackLayout>
-            <Frame BackgroundColor="Aqua" CornerRadius="8">
+            <Frame BackgroundColor="{Binding NewTask.Urgency, Converter={StaticResource UrgencyToColor}}" CornerRadius="8">
                 <StackLayout>
                     <Entry Text="{Binding NewTask.Title}"/>
                     <Editor Text="{Binding NewTask.Description}" MaxLength="100" AutoSize="TextChanges"/>
+                    <Picker SelectedIndex="{Binding NewTask.Urgency, Converter={StaticResource EnumToInt}}">
+                        <Picker.Items>
+                            <x:String>Urgently</x:String>
+                            <x:String>Middle</x:String>
+                            <x:String>No matter</x:String>
+                        </Picker.Items>
+                    </Picker>
                 </StackLayout>
             </Frame>
             <Button Text="Add new task" Command="{Binding AddCommand}"/>

@@ -42,6 +42,10 @@ public class TaskListViewModel : INotifyPropertyChanged
         NewTask = new TaskModel();
 
         Tasks = new ObservableCollection<TaskModel>(_repository.GetAll().Result);
+        foreach (var taskModel in Tasks)
+        {
+            taskModel.PropertyChanged += OnTaskPropertyChange;
+        }
 
         AddCommand = new Command(async () => await Create());
         ShowAddFormCommand = new Command(async () => await ShowAddForm());
@@ -49,12 +53,21 @@ public class TaskListViewModel : INotifyPropertyChanged
         DeleteCommand = new Command(Delete);
     }
 
+    private void OnTaskPropertyChange(object sender, PropertyChangedEventArgs e)
+    {
+        if (sender is not TaskModel)
+            return;
+
+        _repository.Update((TaskModel)sender);
+    }
+
     private async Task Create()
     {
         var taskToAdd = new TaskModel()
         {
             Title = NewTask.Title,
-            Description = NewTask.Description
+            Description = NewTask.Description,
+            Urgency = NewTask.Urgency
         };
         
         Tasks.Add(taskToAdd);
@@ -64,6 +77,7 @@ public class TaskListViewModel : INotifyPropertyChanged
             return;;
 
         taskToAdd.Id = addResult.Result;
+        taskToAdd.PropertyChanged += OnTaskPropertyChange;
 
         await _navigation.PopModalAsync(true);
         

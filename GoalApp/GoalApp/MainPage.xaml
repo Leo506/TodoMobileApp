@@ -3,7 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:GoalApp"
              xmlns:viewModels="clr-namespace:GoalApp.ViewModels;assembly=GoalApp"
+             xmlns:convertos="clr-namespace:GoalApp.Convertors;assembly=GoalApp"
              x:Class="GoalApp.MainPage">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <convertos:UrgencyToColorConvertor x:Key="UrgencyToColor"/>
+            <convertos:EnumToIntConvertor x:Key="EnumToInt"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <StackLayout VerticalOptions="FillAndExpand">
         <Grid>
@@ -18,10 +26,17 @@
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.View>
-                                <Frame CornerRadius="8" BackgroundColor="Aqua" Margin="0, 10, 0, 0">
+                                <Frame CornerRadius="8" BackgroundColor="{Binding Urgency, Converter={StaticResource UrgencyToColor}}" Margin="0, 10, 0, 0">
                                 <StackLayout>
                                     <Entry Text="{Binding Title, Mode=TwoWay}" FontAttributes="Bold"/>
                                     <Editor Text="{Binding Description, Mode=TwoWay}" AutoSize="TextChanges" MaxLength="100"/>
+                                    <Picker SelectedIndex="{Binding Urgency, Converter={StaticResource EnumToInt}}">
+                                        <Picker.Items>
+                                            <x:String>Urgently</x:String>
+                                            <x:String>Middle</x:String>
+                                            <x:String>No matter</x:String>
+                                        </Picker.Items>
+                                    </Picker>
                                 </StackLayout>
                                     </Frame>
                             </ViewCell.View>
