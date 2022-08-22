@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
+using GoalApp.ErrorWrapping;
 
 namespace GoalApp.Data;
 
 public interface IRepository<T>
 {
-    public IEnumerable<T> GetAll();
+    public ActionResult<IEnumerable<T>> GetAll();
 
-    public T Get(int id);
+    public ActionResult<T> Get(int id);
 
-    public int AddNew(T item);
+    public ActionResult<int> AddNew(T item);
 
-    public void Update(T item);
+    public ActionResult Update(T item);
 
-    public void Delete(T item);
+    public ActionResult Delete(T item);
 }

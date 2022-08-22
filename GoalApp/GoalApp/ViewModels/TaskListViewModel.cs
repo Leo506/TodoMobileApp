@@ -44,7 +44,7 @@ public class TaskListViewModel : INotifyPropertyChanged
             ListViewModel = this
         };
 
-        Tasks = new ObservableCollection<TaskViewModel>(_repository.GetAll()
+        Tasks = new ObservableCollection<TaskViewModel>(_repository.GetAll().Result
             .Select(t => _mapper.Map<TaskViewModel>(t)));
         Tasks.ForEach(t => t.ListViewModel = this);
 
@@ -65,7 +65,11 @@ public class TaskListViewModel : INotifyPropertyChanged
         
         Tasks.Add(taskToAdd);
 
-        taskToAdd.Id = _repository.AddNew(_mapper.Map<TaskModel>(taskToAdd));
+        var addResult = _repository.AddNew(_mapper.Map<TaskModel>(taskToAdd));
+        if (!addResult.Success)
+            return;;
+
+        taskToAdd.Id = addResult.Result;
 
         await _navigation.PopModalAsync(true);
         

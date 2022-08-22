@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using GoalApp.ErrorWrapping;
 using GoalApp.Models;
 using SQLite;
 
@@ -15,17 +17,81 @@ public class TasksRepository : IRepository<TaskModel>
         _database.CreateTable<TaskModel>();
     }
 
-    public IEnumerable<TaskModel> GetAll() => _database.Table<TaskModel>().ToList();
-
-    public TaskModel Get(int id) => _database.Get<TaskModel>(id);
-
-    public int AddNew(TaskModel item)
+    public ActionResult<IEnumerable<TaskModel>> GetAll()
     {
-        _database.Insert(item);
-        return item.Id;
+        var result = new ActionResult<IEnumerable<TaskModel>>();
+        try
+        {
+            result.Result = _database.Table<TaskModel>().ToList();
+        }
+        catch (Exception e)
+        {
+            result.Error = e;
+        }
+
+        return result;
     }
 
-    public void Update(TaskModel item) => _database.Update(item);
+    public ActionResult<TaskModel> Get(int id)
+    {
+        var result = new ActionResult<TaskModel>();
+        try
+        {
+            result.Result = _database.Get<TaskModel>(id);
+        }
+        catch (Exception e)
+        {
+            result.Error = e;
+        }
 
-    public void Delete(TaskModel task) => _database.Delete<TaskModel>(task.Id);
+        return result;
+    }
+
+    public ActionResult<int> AddNew(TaskModel item)
+    {
+        var result = new ActionResult<int>();
+        try
+        {
+            _database.Insert(item);
+            result.Result = item.Id;
+        }
+        catch (Exception e)
+        {
+            result.Error = e;
+        }
+
+        return result;
+    }
+
+    public ActionResult Update(TaskModel item)
+    {
+        var result = new ActionResult();
+
+        try
+        {
+            _database.Update(item);
+        }
+        catch (Exception e)
+        {
+            result.Error = e;
+        }
+
+        return result;
+    }
+
+    public ActionResult Delete(TaskModel task)
+    {
+        var result = new ActionResult();
+
+        try
+        {
+            _database.Delete<TaskModel>(task.Id);
+        }
+        catch (Exception e)
+        {
+            result.Error = e;
+        }
+
+        return result;
+    }
 }
